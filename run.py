@@ -1,11 +1,17 @@
 import os
-from flask import Flask, render_template, redirect, request, url_for
-from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
+from flask_pymongo import PyMongo
+from flask import Flask, render_template, redirect, request, url_for
+
+
+from os import path
+if path.exists("env.py"):
+    import env
+
 
 app = Flask(__name__)
-app.config["MONGO_DBNAME"] = 'task_manager'
-app.config["MONGO_URI"] = 'mongodb+srv://dbUser:trevBYTEdbpassci@myfirstclusterci-904s1.mongodb.net/task_manager?retryWrites=true&w=majority'
+app.config["MONGO_DBNAME"] = os.environ.get('MONGODB_NAME')
+app.config["MONGO_URI"] = os.environ.get('MONGO_URI')
 
 mongo = PyMongo(app)
 
@@ -13,6 +19,7 @@ mongo = PyMongo(app)
 @app.route('/')
 @app.route('/get_tasks')
 def get_tasks():
+    print("Im working")
     return render_template("tasks.html", tasks=mongo.db.tasks.find())
 
 
